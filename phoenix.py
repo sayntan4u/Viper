@@ -63,4 +63,30 @@ class Phoenix:
         return out
 
     def process_java(self):
-        pass
+        #magicNum = random.randint(1, 100000)
+
+        #create code file
+        file = open('Main.java','w')
+        file.write(self.code)
+        file.close()
+
+        isCompileSuccess = False
+        out = ""
+
+        #compile code file
+
+        p = subprocess.Popen("javac Main.java", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        isCompileSuccess = True
+        for line in p.stdout.readlines():
+            out = out+line.decode("utf-8")
+            isCompileSuccess = False
+            print(line)
+        os.remove('Main.java')
+
+        if(isCompileSuccess):
+        #run
+            p = subprocess.Popen('java Main',stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            for line in p.stdout.readlines():
+                out = out+line.decode("utf-8")
+
+        return out

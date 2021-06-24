@@ -17,7 +17,7 @@ def runCode():
   if(lang == "C" or lang == "C++"):
     out = p1.process_c_cpp()
   elif(lang == "Java"):
-    pass
+    out = p1.process_java()
   elif(lang == "Python"):
     out = p1.process_python()
   
