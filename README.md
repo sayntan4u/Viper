@@ -7,3 +7,4 @@ Prerequisite(For windows only)-
 
 1. GCC - https://sourceforge.net/projects/mingw/
 2. Python - https://www.python.org/downloads/
+3. Flask - "pip install Flask"
