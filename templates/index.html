@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename = 'format_code.ico') }}" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style type="text/css">
+        .viper_brand {
+            color: #E3E3E3 !important;
+            font-family: "Courier New";
+            font-weight: bold;
+        }
+
+        .ace_editor {
+            font-size: 14px !important;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        #editor {
+            margin: 0;
+            position: absolute;
+            top: 55px;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+        }
+
+        #taskbar{
+            margin: 0;
+            position: absolute;
+            bottom: 0;
+            height:20px;
+            background-color: #232323;
+            color:#E2E2E2;
+            left: 0;
+            right: 0;
+            padding-left:10px;
+            padding-right:10px;
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            font-size:14px !important;
+        }
+    </style>
+
+    <title>Viper</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light" style = "background-color: #232323;">
+        <div class="container-fluid">
+            <a class="navbar-brand viper_brand" href="#"> Viper </a>
+
+            <div class="d-flex">
+                <select class="form-select" id="lang_dropdown" style="width:100px;margin-right:10px">
+                    <option value="0" selected>C</option>
+                    <option value="1">C++</option>
+                    <option value="2">Python</option>
+                    <option value="3" disabled>Java</option>
+                </select>
+                <button type="button" class="btn btn-success"> Run
+                    <!-- <img src="{{ url_for('static', filename = 'play.png') }}" width = 20 height = 18/> -->
+                </button>
+            </div>
+
+        </div>
+    </nav>
+    <form id="viper_code">
+        <div id="editor"></div>
+    </form>
+    <div id="taskbar">
+        <div id="status" style="float:left"></div>
+        
+        <div id="compiler_used" style="float:right">Compiler - GCC 8.1.0</div>
+    </div>
+
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename = 'ace.js') }}" type="text/javascript" charset="utf-8"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/twilight");
+        editor.session.setMode("ace/mode/c_cpp");
+    </script>
+    <script>
+        $(document).ready(function () {
+            editor.setValue(`#include <stdio.h> 
+void main(){ 
+    printf("hello viper");
+}`);
+
+            $("button").click(function () {
+                $code = editor.getValue();
+                $lang = $("#lang_dropdown").find(":selected").text();
+                $("#status").text("Processing..");
+                $.post("/runCode",
+                    {
+                        code: $code,
+                        lang : $lang
+                    },
+                    function (data, status) {
+                        $("#status").text("");
+                        alert("output : \n" + data);
+                    });
+            });
+
+            $('select').on('change', function() {
+               if(this.value<=1){
+                editor.session.setMode("ace/mode/c_cpp");
+                $("#compiler_used").text("Compiler - GCC 8.1.0");
+               }
+               else if(this.value == 2){
+                editor.session.setMode("ace/mode/python");
+                $("#compiler_used").text("Compiler - Python 3.9.5");
+               }
+               else{
+                editor.session.setMode("ace/mode/java");
+               }
+
+
+            });
+        });
+    </script>
+</body>
+
+</html>
